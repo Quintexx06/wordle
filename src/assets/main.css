@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import './base.css';
+@import './keyframes.css';
+
+h1, h2, h3, h4, h5, h6{
+ font-family: 'Raleway', sans-serif;
+  color: #232523;
+}
+.confetti {
+    position: fixed;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.confetti:nth-child(odd) {
+    background-color: #2ad394; /* Alternate color */
+}
+
+.confetti:nth-child(even) {
+    background-color: #2a98d3; /* Alternate color */
+}
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+body {
+  display: flex;
+  place-items: center;
+}
+
+/*Buttons*/
+
+.button{
+    border: 2px solid #232523;
+    background: transparent;
+    cursor: pointer;
+    color: #232523;
+    font-family: 'Raleway', sans-serif;
+    font-weight: bold;
+    font-size: 1.1em;
+
+    border-radius: 0.4em;
+    padding: 0.5rem 1rem;
+
+    transition: 0.2s;
+    text-decoration: none;
+    line-height: 1.2;
+}
+
+.button:hover{
+    background-color: rgb(103, 253, 196);
+    color: black;
+
+}

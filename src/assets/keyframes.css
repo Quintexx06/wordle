@@ -1,0 +1,17 @@
+
+@keyframes zoom-out-shape-1-anim {
+    from {
+        width: 270px;
+    }
+    to{
+        width: 210px;
+    }
+}
+@keyframes zoom-out-shape-2-anim {
+    from {
+        width: 450px;
+    }
+    to{
+        width: 380px;
+    }
+}
