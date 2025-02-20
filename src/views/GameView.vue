@@ -5,29 +5,45 @@ import { gsap } from 'gsap'
 const colAmount = ref(5);
 const filledRow = ref(-1);
 const lettersArr = ref(Array.from({ length: colAmount.value }, () => Array(5).fill("")));
+const wonGameStatus = ref(false);
 const wordOfTheDay = ref("HELLO");
 
 const showEndScreen = (wonGame) => {
   const endScreenBackdrop = document.getElementById("end-screen-backdrop");
   const endScreen = document.getElementById("end-screen");
+  wonGameStatus.value = wonGame;
 
-
+  /*End Screen Animation*/
   gsap.fromTo(
     endScreenBackdrop,
-    { height: 0, opacity:0, y: 50 },
+    { height: 0, opacity:0, y: 0 },
     { height: "100vh", opacity: 1, y: 0, duration: 1, ease: "power3.out" }
   );
 
   gsap.fromTo(
     endScreen,
-    { opacity: 0, y: 50 },
-    { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+    { opacity: 0, y: 20  },
+    { opacity: 1, y: "-50%",  duration: 1.8, ease: "power3.out" }
+  );
+
+  /*Circle Animation*/
+  const circleDecor1 = document.getElementById("circle-decor");
+  const circleDecor2 = document.getElementById("circle-decor-2");
+
+  gsap.fromTo(
+    circleDecor1,
+    { opacity:0,x: 50},
+    {  opacity: 1, x: 0, delay: 1, duration: 1.6, ease: "power3.out", rotation: 180 }
+  );
+
+  gsap.fromTo(
+    circleDecor2,
+    { opacity: 0, x: 120, rotation: 0  },
+    { opacity: 1, x:0 , delay: 1, rotation: 360, duration: 1.8, ease: "power3.out" }
   );
 };
 
 onMounted(() =>{
-  showEndScreen(true);
-
   const gameContent = document.getElementById('game-content');
 
   //Input Row Creation
@@ -112,7 +128,20 @@ onMounted(() =>{
               inputStatus.value = "incorrect";
               incorrectWord.value = true;
             } else if (wordOfTheDay.value[i] !== inputLetter) {
-              inputStatus.value = "misplaced";
+              //Misplaced Logic
+
+              const indexOfMisplacedElement = wordOfTheDay.value.indexOf(inputLetter);
+              const checkMissplacedinputElement = document.getElementById('input-' + filledRow.value + "-" + (indexOfMisplacedElement));
+
+              // Handle Duplicates better
+              if(wordOfTheDay.value[indexOfMisplacedElement] == checkMissplacedinputElement.value
+              ){
+                inputStatus.value = "incorrect";
+              }
+              else{
+                inputStatus.value = "misplaced";
+              }
+
               incorrectWord.value = true;
             } else {
               inputStatus.value = "correct";
@@ -163,12 +192,12 @@ onMounted(() =>{
     <div class="container">
       <div id="game-content" class="col mt-12">
 
-    </div>
+      </div>
       <div class="end-container">
         <router-link class="quit-btn" to="/">Quit Game</router-link>
 
       </div>
-  </div>
+    </div>
 
 
     <div class="counter">
@@ -179,14 +208,53 @@ onMounted(() =>{
   </main>
   <div id="end-screen-backdrop" class="end-screen-backdrop"></div>
   <div id="end-screen" class="end-screen" >
-    <h2>Game Over</h2>
-    <router-link class="button" to="/"> Back Home</router-link>
-    <router-link class="button" to="/streak"> Your Streak</router-link>
+    <div class="circle-decor-wrapper">
+      <div class="circle-decor" id="circle-decor"></div>
+      <div class="circle-decor-2" id="circle-decor-2"></div>
+    </div>
+    <h1 class="end-screen-title">Game Over</h1>
+    <h3 v-show="!wonGameStatus">Sadly you've lost for today</h3>
+    <h3 v-show="wonGameStatus">Congrats you won for today</h3>
+
+    <div class="flex-row">
+      <router-link class="button" to="/">Back Home</router-link>
+      <router-link class="button" to="/streak"> Your Streak</router-link>
+    </div>
 
   </div>
 </template>
 
 <style scoped>
+
+.end-screen-title{
+  font-weight: bold;
+}
+
+.circle-decor-wrapper{
+  position: relative;
+}
+
+.circle-decor{
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  position: relative;
+  background: linear-gradient(to right, rgb(55, 200, 151), rgb(127, 218, 187));
+  margin-bottom: 25px;
+}
+
+.circle-decor-2{
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: -10px;
+  left: 70px;
+
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  background: linear-gradient(to right, rgb(55, 195, 200), rgb(127, 215, 218));
+}
 
 .end-screen{
   opacity: 0;
@@ -198,6 +266,7 @@ onMounted(() =>{
   padding: 20px;
   border-radius: 10px;
 }
+
 .end-screen-backdrop{
   opacity: 0;
   position: fixed;
@@ -330,6 +399,12 @@ onMounted(() =>{
 
     background: rgba(221, 144, 144, 0.35);
   }
+}
+
+.flex-row{
+  margin-top: 12px;
+  display: flex;
+  gap: 15px;
 }
 
 </style>
