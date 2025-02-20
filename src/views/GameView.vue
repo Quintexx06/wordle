@@ -5,12 +5,28 @@ import { gsap } from 'gsap'
 const colAmount = ref(5);
 const filledRow = ref(-1);
 const lettersArr = ref(Array.from({ length: colAmount.value }, () => Array(5).fill("")));
+const wordOfTheDay = ref("HELLO");
 
-function endGame(){
-  console.log("End Game Anims");
-}
+const showEndScreen = (wonGame) => {
+  const endScreenBackdrop = document.getElementById("end-screen-backdrop");
+  const endScreen = document.getElementById("end-screen");
+
+
+  gsap.fromTo(
+    endScreenBackdrop,
+    { height: 0, opacity:0, y: 50 },
+    { height: "100vh", opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+  );
+
+  gsap.fromTo(
+    endScreen,
+    { opacity: 0, y: 50 },
+    { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+  );
+};
 
 onMounted(() =>{
+  showEndScreen(true);
 
   const gameContent = document.getElementById('game-content');
 
@@ -38,7 +54,7 @@ onMounted(() =>{
 
         //Switch to next Input after Input
         if(x == 4 && i == 4){
-          return endGame();
+          return;
         }
 
         for (let index = 0; index < lettersArr.value[filledRow.value + 1].length + 1; index++) {
@@ -59,17 +75,13 @@ onMounted(() =>{
         }
 
       });
-
       rowElement.appendChild(inputElement);
     }
-
     gameContent.appendChild(rowElement);
   }
 
-
   watch(() => filledRow.value,() => {
     lettersArr.value[filledRow.value].forEach((letterInput, index) => {
-
       const inputField = document.getElementById('input-' + (filledRow.value) + "-" + index);
       inputField.disabled = true  ;
     })
@@ -78,28 +90,39 @@ onMounted(() =>{
   watch(
     () => lettersArr.value,
     (newlettersArr) => {
+      //Check Rows Filled Up
       newlettersArr.forEach((row, rowIndex) => {
         if (filledRow.value < rowIndex && row.length === colAmount.value && row.every((val) => val != "")) {
           console.log(`Row ${rowIndex} is completely filled  and not empty!`);
+          if(rowIndex == 4){
+            showEndScreen(false);
+          }
+
           filledRow.value = rowIndex;
+
+          const incorrectWord = ref(false);
 
           for (let i = 0; i < colAmount.value; i++) {
 
-            const wordOfTheDay = "HELLO";
             const inputElement = document.getElementById('input-' + filledRow.value + "-" + (i));
             const inputLetter = newlettersArr[filledRow.value][i];
-            const inputStatus = ref("incorrect");
+            const inputStatus = ref("correct");
 
-            if(wordOfTheDay.includes(inputLetter)) {
-              if(!wordOfTheDay[i].includes(inputLetter)){
-                inputStatus.value = "misplaced";
-              }
-              else{
-                inputStatus.value = "correct";
-              }
+            if (!wordOfTheDay.value.includes(inputLetter)) {
+              inputStatus.value = "incorrect";
+              incorrectWord.value = true;
+            } else if (wordOfTheDay.value[i] !== inputLetter) {
+              inputStatus.value = "misplaced";
+              incorrectWord.value = true;
+            } else {
+              inputStatus.value = "correct";
             }
 
             inputElement.classList.add(inputStatus.value);
+          }
+
+          if(!incorrectWord.value){
+            showEndScreen(true);
           }
         }
       });
@@ -135,7 +158,6 @@ onMounted(() =>{
 
 <template>
   <main>
-
     <h1 class="text-center headline">Guess Now</h1>
 
     <div class="container">
@@ -155,9 +177,36 @@ onMounted(() =>{
     <img src="../assets/startView/shape_1.svg" draggable="false" class="shape shape-1" alt="Shape 1">
     <img src="../assets/startView/shape_2.svg" draggable="false" class="shape shape-2" alt="Shape 2">
   </main>
+  <div id="end-screen-backdrop" class="end-screen-backdrop"></div>
+  <div id="end-screen" class="end-screen" >
+    <h2>Game Over</h2>
+    <router-link class="button" to="/"> Back Home</router-link>
+    <router-link class="button" to="/streak"> Your Streak</router-link>
+
+  </div>
 </template>
 
 <style scoped>
+
+.end-screen{
+  opacity: 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+.end-screen-backdrop{
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(10px);
+  width: 100vw;
+}
 
 .counter{
   position: absolute;
