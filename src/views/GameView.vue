@@ -2,187 +2,201 @@
 import { onMounted, ref, watch } from 'vue'
 import { gsap } from 'gsap'
 
-const colAmount = ref(5);
-const filledRow = ref(-1);
-const lettersArr = ref(Array.from({ length: colAmount.value }, () => Array(5).fill("")));
-const wonGameStatus = ref(false);
-const wordOfTheDay = ref("HELLO");
+const colAmount = ref(5)
+const filledRow = ref(-1)
+const lettersArr = ref(Array.from({ length: colAmount.value }, () => Array(5).fill('')))
+const wordOfTheDay = ref('')
+const wonGameStatus = ref(null)
 
-const showEndScreen = (wonGame) => {
-  const endScreenBackdrop = document.getElementById("end-screen-backdrop");
-  const endScreen = document.getElementById("end-screen");
-  wonGameStatus.value = wonGame;
 
-  /*End Screen Animation*/
+const endScreenAnims = () => {
+  const endScreenBackdrop = document.getElementById('end-screen-backdrop')
+  const endScreen = document.getElementById('end-screen')
   gsap.fromTo(
     endScreenBackdrop,
-    { height: 0, opacity:0, y: 0 },
-    { height: "100vh", opacity: 1, y: 0, duration: 1, ease: "power3.out" }
-  );
+    { height: 0, opacity: 0, y: 0 },
+    { height: '100vh', opacity: 1, y: 0, duration: 1, ease: 'power3.out' },
+  )
 
   gsap.fromTo(
     endScreen,
-    { opacity: 0, y: 20  },
-    { opacity: 1, y: "-50%",  duration: 1.8, ease: "power3.out" }
-  );
+    { opacity: 0, y: 20 },
+    { opacity: 1, y: '-50%', duration: 1.8, ease: 'power3.out' },
+  )
+}
 
-  /*Circle Animation*/
-  const circleDecor1 = document.getElementById("circle-decor");
-  const circleDecor2 = document.getElementById("circle-decor-2");
+const circleAnims = () => {
+  const circleDecor1 = document.getElementById('circle-decor')
+  const circleDecor2 = document.getElementById('circle-decor-2')
+
+  let customBackground1 = "linear-gradient(to right, rgb(55, 200, 151), rgb(127, 218, 187))";
+  let customBackground2 = "linear-gradient(to right, rgb(55, 195, 200), rgb(127, 215, 218))";
+
+  if(!wonGameStatus.value) {
+    customBackground1 = "linear-gradient(to right, rgb(135, 55, 200), rgb(218, 127, 216))";
+    customBackground2 = "linear-gradient(to right, rgb(216, 83, 83), rgb(218, 148, 127))";
+  }
+
 
   gsap.fromTo(
     circleDecor1,
-    { opacity:0,x: 50},
-    {  opacity: 1, x: 0, delay: 1, duration: 1.6, ease: "power3.out", rotation: 180 }
-  );
+    { opacity: 0, x: 50, background: customBackground1  },
+    { opacity: 1, x: 0, delay: 1, duration: 1.6, ease: 'power3.out', rotation: 180},
+  )
 
   gsap.fromTo(
     circleDecor2,
-    { opacity: 0, x: 120, rotation: 0  },
-    { opacity: 1, x:0 , delay: 1, rotation: 360, duration: 1.8, ease: "power3.out" }
-  );
-};
+    { opacity: 0, x: 120, rotation: 0, background: customBackground2 },
+    { opacity: 1, x: 0, delay: 1, rotation: 360, duration: 1.8, ease: 'power3.out' },
+  )
+}
 
-onMounted(() =>{
-  const gameContent = document.getElementById('game-content');
+const showEndScreen = (wonGame) => {
+  wonGameStatus.value = wonGame
+  endScreenAnims()
+  circleAnims()
+}
 
-  //Input Row Creation
-  for (let x = 0; x < colAmount.value; x++) {
-    const rowElement = document.createElement('div');
-    rowElement.classList.add('row');
+const handleInput = (rowIndex, colIndex) => {
+  const inputElement = ref(lettersArr.value[rowIndex][colIndex])
 
-    //Input Element Creation
-    for (let i = 0; i < colAmount.value; i++) {
-      const inputElement = document.createElement('input');
-      inputElement.setAttribute("id", "input"  + "-" + x + "-" + i)
-      inputElement.setAttribute("autocomplete", "off")
-      inputElement.classList.add('input');
-
-      inputElement.addEventListener("input", () => {
-        if (inputElement.value.length > 1) {
-          inputElement.value = inputElement.value.slice(0, 1);
-        }
-        inputElement.value = inputElement.value.toLocaleUpperCase();
-        if (!lettersArr.value[x])  lettersArr.value[x] = [];
-
-        lettersArr.value[x][i] = inputElement.value.trim();
-        console.log(lettersArr.value);
-
-        //Switch to next Input after Input
-        if(x == 4 && i == 4){
-          return;
-        }
-
-        for (let index = 0; index < lettersArr.value[filledRow.value + 1].length + 1; index++) {
-
-          let currentRow = filledRow.value + 1;
-          if(index == colAmount.value){
-            currentRow = x + 1;
-            index = 0;
-          }
-
-          const input = lettersArr.value[currentRow][index];
-          if (input === "") {
-            const nextFocusInput = document.getElementById('input-' + (currentRow) + "-" + index);
-            nextFocusInput.focus();
-            break;
-
-          }
-        }
-
-      });
-      rowElement.appendChild(inputElement);
-    }
-    gameContent.appendChild(rowElement);
+  if (inputElement.value.length > 1) {
+    inputElement.value = inputElement.value.slice(0, 1)
   }
 
-  watch(() => filledRow.value,() => {
-    lettersArr.value[filledRow.value].forEach((letterInput, index) => {
-      const inputField = document.getElementById('input-' + (filledRow.value) + "-" + index);
-      inputField.disabled = true  ;
-    })
-  });
+  inputElement.value = inputElement.value.toLocaleUpperCase()
+  if (!lettersArr.value[rowIndex]) lettersArr.value[rowIndex] = []
+
+  lettersArr.value[rowIndex][colIndex] = inputElement.value.trim()
+
+  //Switch to next Input after Input
+  if (rowIndex == 4 && colIndex == 4) return
+
+  for (let index = 0; index < lettersArr.value[filledRow.value + 1].length + 1; index++) {
+    let currentRow = filledRow.value + 1
+
+    if (index === colAmount.value) {
+      currentRow = colIndex + 1
+      index = 0
+    }
+
+    const input = lettersArr.value[currentRow][index]
+    if (input === '') {
+      const nextFocusInput = document.getElementById('input-' + currentRow + '-' + index)
+      nextFocusInput.focus()
+      break
+    }
+  }
+}
+
+const checkLettersInRow = (newlettersArr) => {
+  const incorrectWord = ref(false)
+
+  for (let i = 0; i < colAmount.value; i++) {
+    const inputLetter = newlettersArr[filledRow.value][i]
+    const inputStatus = ref('correct')
+
+    if (!wordOfTheDay.value.includes(inputLetter)) {
+      inputStatus.value = 'incorrect'
+      incorrectWord.value = true
+    } else if (wordOfTheDay.value[i] !== inputLetter) {
+      //Misplaced Logic
+
+      const indexOfMisplacedElement = wordOfTheDay.value.indexOf(inputLetter)
+      const checkMissplacedinputElement = document.getElementById(
+        'input-' + filledRow.value + '-' + indexOfMisplacedElement,
+      )
+
+      // Handle Duplicates better
+      if (wordOfTheDay.value[indexOfMisplacedElement] == checkMissplacedinputElement.value) {
+        inputStatus.value = 'incorrect'
+      } else {
+        inputStatus.value = 'misplaced'
+      }
+
+      incorrectWord.value = true
+    } else {
+      inputStatus.value = 'correct'
+    }
+
+    const inputElement = document.getElementById('input-' + filledRow.value + '-' + i)
+    inputElement.classList.add(inputStatus.value)
+  }
+
+  if (!incorrectWord.value) showEndScreen(true)
+}
+
+const getWordleWord = async () => {
+  const response = await fetch("/store/wordle_words.json");
+  const data = await response.json();
+  const randomIndex = Math.floor(Math.random() * data.words.length);
+  wordOfTheDay.value = data.words[randomIndex].toLocaleUpperCase();
+  console.log("Word of the Day: " + wordOfTheDay.value);
+}
+
+onMounted(() => {
+  getWordleWord();
+
+  watch(
+    () => filledRow.value,
+    () => {
+      lettersArr.value[filledRow.value].forEach((letterInput, index) => {
+        const inputField = document.getElementById('input-' + filledRow.value + '-' + index)
+        inputField.disabled = true
+      })
+    },
+  )
 
   watch(
     () => lettersArr.value,
     (newlettersArr) => {
       //Check Rows Filled Up
+
       newlettersArr.forEach((row, rowIndex) => {
-        if (filledRow.value < rowIndex && row.length === colAmount.value && row.every((val) => val != "")) {
-          console.log(`Row ${rowIndex} is completely filled  and not empty!`);
-          if(rowIndex == 4){
-            showEndScreen(false);
+        if (
+          filledRow.value < rowIndex &&
+          row.length === colAmount.value &&
+          row.every((val) => val != '')
+        ) {
+          console.log(`Row ${rowIndex} is completely filled  and not empty!`)
+          if (rowIndex == 4) {
+            showEndScreen(false)
           }
 
-          filledRow.value = rowIndex;
+          filledRow.value = rowIndex
 
-          const incorrectWord = ref(false);
-
-          for (let i = 0; i < colAmount.value; i++) {
-
-            const inputElement = document.getElementById('input-' + filledRow.value + "-" + (i));
-            const inputLetter = newlettersArr[filledRow.value][i];
-            const inputStatus = ref("correct");
-
-            if (!wordOfTheDay.value.includes(inputLetter)) {
-              inputStatus.value = "incorrect";
-              incorrectWord.value = true;
-            } else if (wordOfTheDay.value[i] !== inputLetter) {
-              //Misplaced Logic
-
-              const indexOfMisplacedElement = wordOfTheDay.value.indexOf(inputLetter);
-              const checkMissplacedinputElement = document.getElementById('input-' + filledRow.value + "-" + (indexOfMisplacedElement));
-
-              // Handle Duplicates better
-              if(wordOfTheDay.value[indexOfMisplacedElement] == checkMissplacedinputElement.value
-              ){
-                inputStatus.value = "incorrect";
-              }
-              else{
-                inputStatus.value = "misplaced";
-              }
-
-              incorrectWord.value = true;
-            } else {
-              inputStatus.value = "correct";
-            }
-
-            inputElement.classList.add(inputStatus.value);
-          }
-
-          if(!incorrectWord.value){
-            showEndScreen(true);
-          }
+          setTimeout(() => {
+            checkLettersInRow(newlettersArr)
+          }, 50)
         }
-      });
+      })
     },
-    { deep: true }
-  );
+    { deep: true },
+  )
 
   //Quit shake Animation
-  document.querySelectorAll(".quit-btn").forEach((el) => {
-    el.addEventListener("mouseenter", () => {
+  document.querySelectorAll('.quit-btn').forEach((el) => {
+    el.addEventListener('mouseenter', () => {
       gsap.fromTo(
         el,
-        { x: "-10" },
+        { x: '-10' },
         {
-          x: "10",
+          x: '10',
           duration: 0.1,
           repeat: 5,
           yoyo: true,
-          ease: "power1.inOut",
+          ease: 'bounce.inOut',
           onComplete: () => {
-            gsap.to(el, { x: 0, duration: 0.2, ease: "power1.out" });
+            gsap.to(el, { x: 0, duration: 0.2, ease: 'power1.out' })
           },
-        });
-    });
-
-  });
+        },
+      )
+    })
+  })
   return {
     lettersArr,
-  };
-});
-
+  }
+})
 </script>
 
 <template>
@@ -191,59 +205,76 @@ onMounted(() =>{
 
     <div class="container">
       <div id="game-content" class="col mt-12">
-
+        <div v-for="(row, rowIndex) in lettersArr" :key="rowIndex" class="row">
+          <input
+            v-for="(col, colIndex) in row"
+            :key="col"
+            :id="`input-${rowIndex}-${colIndex}`"
+            autocomplete="off"
+            v-model="lettersArr[rowIndex][colIndex]"
+            class="input"
+            @input="handleInput(rowIndex, colIndex)"
+            type="text"
+          />
+        </div>
       </div>
       <div class="end-container">
         <router-link class="quit-btn" to="/">Quit Game</router-link>
-
       </div>
     </div>
 
-
-    <div class="counter">
-      24.223s
-    </div>
-    <img src="../assets/startView/shape_1.svg" draggable="false" class="shape shape-1" alt="Shape 1">
-    <img src="../assets/startView/shape_2.svg" draggable="false" class="shape shape-2" alt="Shape 2">
+    <div class="counter">24.223s</div>
+    <img
+      src="../assets/startView/shape_1.svg"
+      draggable="false"
+      class="shape shape-1"
+      alt="Shape 1"
+    />
+    <img
+      src="../assets/startView/shape_2.svg"
+      draggable="false"
+      class="shape shape-2"
+      alt="Shape 2"
+    />
   </main>
-  <div id="end-screen-backdrop" class="end-screen-backdrop"></div>
-  <div id="end-screen" class="end-screen" >
+  <div v-show="wonGameStatus != undefined" id="end-screen-backdrop" class="end-screen-backdrop"></div>
+  <div v-show="wonGameStatus != undefined" id="end-screen" class="end-screen">
     <div class="circle-decor-wrapper">
       <div class="circle-decor" id="circle-decor"></div>
       <div class="circle-decor-2" id="circle-decor-2"></div>
     </div>
     <h1 class="end-screen-title">Game Over</h1>
-    <h3 v-show="!wonGameStatus">Sadly you've lost for today</h3>
+    <h3 v-show="!wonGameStatus">
+      Sadly you've lost for today.<br>
+      The Word was <b style="font-weight: bolder">{{wordOfTheDay}}</b>!
+    </h3>
     <h3 v-show="wonGameStatus">Congrats you won for today</h3>
 
     <div class="flex-row">
       <router-link class="button" to="/">Back Home</router-link>
       <router-link class="button" to="/streak"> Your Streak</router-link>
     </div>
-
   </div>
 </template>
 
 <style scoped>
-
-.end-screen-title{
+.end-screen-title {
   font-weight: bold;
 }
 
-.circle-decor-wrapper{
+.circle-decor-wrapper {
   position: relative;
 }
 
-.circle-decor{
+.circle-decor {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   position: relative;
-  background: linear-gradient(to right, rgb(55, 200, 151), rgb(127, 218, 187));
   margin-bottom: 25px;
 }
 
-.circle-decor-2{
+.circle-decor-2 {
   content: '';
   display: block;
   position: absolute;
@@ -253,10 +284,9 @@ onMounted(() =>{
   width: 60px;
   height: 60px;
   border-radius: 10px;
-  background: linear-gradient(to right, rgb(55, 195, 200), rgb(127, 215, 218));
 }
 
-.end-screen{
+.end-screen {
   opacity: 0;
   position: fixed;
   top: 50%;
@@ -267,7 +297,7 @@ onMounted(() =>{
   border-radius: 10px;
 }
 
-.end-screen-backdrop{
+.end-screen-backdrop {
   opacity: 0;
   position: fixed;
   top: 0;
@@ -277,7 +307,7 @@ onMounted(() =>{
   width: 100vw;
 }
 
-.counter{
+.counter {
   position: absolute;
   top: 0;
   right: 0;
@@ -290,14 +320,14 @@ onMounted(() =>{
   font-weight: 500;
   font-family: 'Raleway', sans-serif;
 }
-.col{
+.col {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
 /*noinspection ALL*/
-:deep(.input){
+:deep(.input) {
   width: 55px;
   height: 60px;
   text-align: center;
@@ -313,73 +343,69 @@ onMounted(() =>{
 }
 
 /*noinspection ALL*/
-:deep(.input:focus){
+:deep(.input:focus) {
   border: 0.04em solid #5482ac;
   background: #ebf5ff;
 }
 
 /*noinspection ALL*/
-:deep(.input.correct){
+:deep(.input.correct) {
   border: 0.04em solid #2ad394;
   background: #c8f8e6;
 }
 
 /*noinspection ALL*/
-:deep(.input.incorrect){
+:deep(.input.incorrect) {
   border: 0.04em solid #ed4040;
   background: #f4cbcb;
 }
 
 /*noinspection ALL*/
-:deep(.input.misplaced){
+:deep(.input.misplaced) {
   border: 0.04em solid #eda840;
   background: #f4e2cb;
 }
 
-
-
-
 /*noinspection ALL*/
-:deep(.row){
+:deep(.row) {
   display: flex;
   justify-content: center;
   gap: 15px;
-
 }
 
-.mt-12{
+.mt-12 {
   margin-top: 12px;
 }
 
-.text-center{
+.text-center {
   text-align: center;
 }
 
-.shape{
+.shape {
   position: absolute;
   height: auto;
 }
 
-.shape-1{
+.shape-1 {
   width: 270px;
   animation: zoom-out-shape-1-anim ease-in-out 1s forwards;
   bottom: 0;
   right: 0;
 }
-.shape-2{
+.shape-2 {
   width: 450px;
   animation: zoom-out-shape-2-anim ease-in-out 1s forwards;
   top: 0;
   left: 0;
 }
 
-.end-container{
+.end-container {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.quit-btn{
+.quit-btn {
   text-decoration: none;
   text-align: center;
   display: inline;
@@ -394,17 +420,16 @@ onMounted(() =>{
   border-radius: 5px;
   transition: 0.2s ease;
 
-  &:hover{
+  &:hover {
     color: #000000;
 
     background: rgba(221, 144, 144, 0.35);
   }
 }
 
-.flex-row{
+.flex-row {
   margin-top: 12px;
   display: flex;
   gap: 15px;
 }
-
 </style>

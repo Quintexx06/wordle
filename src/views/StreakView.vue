@@ -28,7 +28,7 @@ const date = defineModel();
   .calendar{
     margin-top: 12px;
     display: block;
-    width: 700px;
+    width: 500px;
     height: auto;
   }
 </style>
