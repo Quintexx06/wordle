@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import SiteCursor from '@/components/SiteCursor.vue'
 
+//Update Git
 export default defineComponent({
   components: { SiteCursor },
 })
