@@ -84,7 +84,7 @@ onMounted(() =>{
     <div class="container">
       <div class="col">
         <h1 class="text-center animated-heading">
-          Wordle&nbsp;Application
+          Wordle1&nbsp;Application
         </h1>
         <h2 class="text-center">Guess the Word of the Day!</h2>
       </div>
