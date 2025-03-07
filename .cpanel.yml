@@ -1,0 +1,10 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/brunner5/wordle.brunner.top/
+    - cd $DEPLOYPATH || { echo "Failed to switch to work tree"; exit 1; }
+    - git reset --hard
+    - git pull origin main
+    - source /home/brunner5/nodevenv/wordle.brunner.top/22/bin/activate
+    - npm install
+    - npm run build-only
