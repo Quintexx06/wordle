@@ -96,12 +96,12 @@ onMounted(() =>{
     </div>
     <div class="row mt-12" >
       <router-link to="play" class="button confetti-button">Start Playing</router-link>
-      <router-link @click="activeStreakCalendar = !activeStreakCalendar" :class="{active: activeStreakCalendar}" to="#" class="button">Your Streak</router-link>
+      <router-link @click="wordleStreakStore.toggleStreak" :class="{active: wordleStreakStore.displayCalendar}" to="#" class="button">Your Streak</router-link>
     </div>
     <img src="../assets/startView/shape_1.svg" draggable="false" class="shape shape-1" alt="Shape 1">
     <img src="../assets/startView/shape_2.svg" draggable="false" class="shape shape-2" alt="Shape 2">
     <AdvertBlock />
-    <StreakCalendar :activeStreakCalendar="activeStreakCalendar" />
+    <StreakCalendar :activeStreakCalendar="wordleStreakStore.displayCalendar" />
 
   </main>
 

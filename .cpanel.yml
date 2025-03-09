@@ -1,4 +1,3 @@
----
 deployment:
   tasks:
     - export DEPLOYPATH=/home/brunner5/wordle.brunner.top/
@@ -7,4 +6,6 @@ deployment:
     - git pull origin main
     - source /home/brunner5/nodevenv/wordle.brunner.top/22/bin/activate
     - npm install
-    - npm run build-only
+    - npm run build
+    - rm -rf $DEPLOYPATH/dist
+    - mv dist $DEPLOYPATH/

@@ -6,7 +6,7 @@ import { ref } from 'vue'
 const wordleStreakStore = useWordleStreakStore();
 const date = ref(wordleStreakStore.streakData);
 const props = defineProps(['activeStreakCalendar'])
-
+import { DatePicker } from 'primevue'
 </script>
 
 <template>

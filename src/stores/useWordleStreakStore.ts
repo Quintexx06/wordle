@@ -16,8 +16,8 @@ export const useWordleStreakStore = defineStore("wordleStreak", {
     activateStreak() {
       this.displayCalendar = true;
     },
-    disableStreak() {
-      this.displayCalendar = false;
+    toggleStreak() {
+      this.displayCalendar = !this.displayCalendar;
     }
   },
 });
