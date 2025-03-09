@@ -6,21 +6,7 @@ h1, h2, h3, h4, h5, h6{
  font-family: 'Raleway', sans-serif;
   color: #232523;
 }
-.confetti {
-    position: fixed;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    pointer-events: none;
-}
 
-.confetti:nth-child(odd) {
-    background-color: #2ad394; /* Alternate color */
-}
-
-.confetti:nth-child(even) {
-    background-color: #2a98d3; /* Alternate color */
-}
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -32,6 +18,16 @@ body {
   display: flex;
   place-items: center;
 }
+
+.text-center{
+    text-align: center;
+}
+
+/*Date Picker*/
+.p-datepicker-calendar td{
+    pointer-events: none !important;
+}
+
 
 /*Buttons*/
 
@@ -52,8 +48,25 @@ body {
     line-height: 1.2;
 }
 
-.button:hover{
+.button.active, .button:hover{
     background-color: rgb(103, 253, 196);
     color: black;
 
+}
+
+/*Button Confetti*/
+.confetti {
+    position: fixed;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.confetti:nth-child(odd) {
+    background-color: #2ad394;
+}
+
+.confetti:nth-child(even) {
+    background-color: #2a98d3;
 }

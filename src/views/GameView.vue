@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { gsap } from 'gsap'
+import { useWordleStreakStore } from '@/stores/useWordleStreakStore.ts'
 
 const colAmount = ref(5)
 const filledRow = ref(-1)
 const lettersArr = ref(Array.from({ length: colAmount.value }, () => Array(5).fill('')))
 const wordOfTheDay = ref('')
 const wonGameStatus = ref(null)
-
+const wordleStreakStore = useWordleStreakStore();
 
 const endScreenAnims = () => {
   const endScreenBackdrop = document.getElementById('end-screen-backdrop')
@@ -51,13 +52,18 @@ const circleAnims = () => {
   )
 }
 
-const showEndScreen = (wonGame) => {
+const showEndScreen = (wonGame: boolean) => {
   wonGameStatus.value = wonGame
+
+  if(wonGame) {
+    wordleStreakStore.updateStreak(new Date());
+  }
+
   endScreenAnims()
   circleAnims()
 }
 
-const handleInput = (rowIndex, colIndex) => {
+const handleInput = (rowIndex : number, colIndex : number) => {
   const inputElement = ref(lettersArr.value[rowIndex][colIndex])
 
   if (inputElement.value.length > 1) {
@@ -83,13 +89,16 @@ const handleInput = (rowIndex, colIndex) => {
     const input = lettersArr.value[currentRow][index]
     if (input === '') {
       const nextFocusInput = document.getElementById('input-' + currentRow + '-' + index)
-      nextFocusInput.focus()
+
+      if(nextFocusInput){
+        nextFocusInput.focus()
+      }
       break
     }
   }
 }
 
-const checkLettersInRow = (newlettersArr) => {
+const checkLettersInRow = (newlettersArr: string[][]) => {
   const incorrectWord = ref(false)
 
   for (let i = 0; i < colAmount.value; i++) {
@@ -108,7 +117,7 @@ const checkLettersInRow = (newlettersArr) => {
       )
 
       // Handle Duplicates better
-      if (wordOfTheDay.value[indexOfMisplacedElement] == checkMissplacedinputElement.value) {
+      if (checkMissplacedinputElement && wordOfTheDay.value[indexOfMisplacedElement] == checkMissplacedinputElement.value) {
         inputStatus.value = 'incorrect'
       } else {
         inputStatus.value = 'misplaced'
@@ -119,8 +128,9 @@ const checkLettersInRow = (newlettersArr) => {
       inputStatus.value = 'correct'
     }
 
-    const inputElement = document.getElementById('input-' + filledRow.value + '-' + i)
-    inputElement.classList.add(inputStatus.value)
+    const inputElement = document.getElementById('input-' + filledRow.value + '-' + i);
+    inputElement?.classList.add(inputStatus.value)
+
   }
 
   if (!incorrectWord.value) showEndScreen(true)
@@ -140,10 +150,15 @@ onMounted(() => {
   watch(
     () => filledRow.value,
     () => {
-      lettersArr.value[filledRow.value].forEach((letterInput, index) => {
-        const inputField = document.getElementById('input-' + filledRow.value + '-' + index)
-        inputField.disabled = true
-      })
+      setTimeout(() => {
+        lettersArr.value[filledRow.value].forEach((_, index) => {
+          const inputField = document.getElementById('input-' + filledRow.value + '-' + index)
+          if(inputField){
+            inputField.disabled = true
+          }
+        })
+      }, 50)
+
     },
   )
 
@@ -252,7 +267,7 @@ onMounted(() => {
 
     <div class="flex-row">
       <router-link class="button" to="/">Back Home</router-link>
-      <router-link class="button" to="/streak"> Your Streak</router-link>
+      <router-link class="button"  @click="wordleStreakStore.activateStreak" to="/"> Your Streak</router-link>
     </div>
   </div>
 </template>
