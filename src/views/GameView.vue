@@ -7,8 +7,26 @@ const colAmount = ref(5)
 const filledRow = ref(-1)
 const lettersArr = ref(Array.from({ length: colAmount.value }, () => Array(5).fill('')))
 const wordOfTheDay = ref('')
-const wonGameStatus = ref(null)
+const wonGameStatus = ref(0)
 const wordleStreakStore = useWordleStreakStore();
+
+const inputFieldsAnim = () => {
+  const inputs = document.querySelectorAll(".input");
+  if (inputs) {
+
+    gsap.fromTo(
+      inputs,
+      { y: 50, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.05,
+      }
+    );
+  }
+}
 
 const endScreenAnims = () => {
   const endScreenBackdrop = document.getElementById('end-screen-backdrop')
@@ -142,10 +160,12 @@ const getWordleWord = async () => {
   const randomIndex = Math.floor(Math.random() * data.words.length);
   wordOfTheDay.value = data.words[randomIndex].toLocaleUpperCase();
   console.log("Word of the Day: " + wordOfTheDay.value);
+
 }
 
 onMounted(() => {
   getWordleWord();
+  inputFieldsAnim();
 
   watch(
     () => filledRow.value,
@@ -238,7 +258,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="counter">24.223s</div>
+
     <img
       src="../assets/startView/shape_1.svg"
       draggable="false"
@@ -252,8 +272,8 @@ onMounted(() => {
       alt="Shape 2"
     />
   </main>
-  <div v-show="wonGameStatus != undefined" id="end-screen-backdrop" class="end-screen-backdrop"></div>
-  <div v-show="wonGameStatus != undefined" id="end-screen" class="end-screen">
+  <div v-show="wonGameStatus" id="end-screen-backdrop" class="end-screen-backdrop"></div>
+  <div v-show="wonGameStatus" id="end-screen" class="end-screen">
     <div class="circle-decor-wrapper">
       <div class="circle-decor" id="circle-decor"></div>
       <div class="circle-decor-2" id="circle-decor-2"></div>
@@ -273,6 +293,27 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
+.headline{
+  position: relative;
+
+}
+
+.headline::after{
+  animation: headline-circle-anim 0.6s linear 1 forwards;
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  right: 70px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid #2ad394;
+}
+
+
+
 .end-screen-title {
   font-weight: bold;
 }
@@ -343,6 +384,7 @@ onMounted(() => {
 
 /*noinspection ALL*/
 :deep(.input) {
+  opacity: 0;
   width: 55px;
   height: 60px;
   text-align: center;

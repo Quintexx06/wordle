@@ -28,7 +28,7 @@ onMounted(() =>{
         opacity: 1,
         duration: 1,
         ease: "elastic.out(1, 0.3)",
-        stagger: 0.1, // Animate one letter at a time
+        stagger: 0.1,
       }
     );
   }

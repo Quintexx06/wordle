@@ -9,8 +9,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <SiteCursor />
+
   <RouterView />
+  <SiteCursor />
 </template>
 
 <style scoped></style>

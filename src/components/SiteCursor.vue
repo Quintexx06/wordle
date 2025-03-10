@@ -5,30 +5,34 @@ import { onMounted, ref, nextTick } from "vue";
 const cursor = ref(null);
 
 onMounted(() => {
-  nextTick(() => {
-    if (!cursor.value) return;
 
-    window.addEventListener("mousemove", (e) => {
-      gsap.to(cursor.value, {
-        x: e.clientX + 20,
-        y: e.clientY - 10,
-        duration: 0.4,
-        ease: "power2.out",
-      });
+  window.addEventListener("mousemove", (e) => {
+    gsap.to(cursor.value, {
+      x: e.clientX + 20,
+      y: e.clientY - 10,
+      duration: 0.4,
+      ease: "power2.out",
     });
-
-    const buttons = document.querySelectorAll(".button");
-    buttons.forEach((el) => {
-      el.addEventListener("mouseenter", () => {
-        gsap.to(cursor.value, { scale: 1.7 , border: '1px solid black', background: 'rgb(40,255,183)', duration: 0.2 });
-      });
-      el.addEventListener("mouseleave", () => {
-        gsap.to(cursor.value, { scale: 1, border: '1px solid transparent',  background: 'rgb(103, 195, 253)', duration: 0.2 });
-      });
-    });
-
-
   });
+
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll(".button, .input").forEach((el) => {
+      el.removeEventListener("mouseenter", handleMouseEnter);
+      el.removeEventListener("mouseleave", handleMouseLeave);
+
+      el.addEventListener("mouseenter", handleMouseEnter);
+      el.addEventListener("mouseleave", handleMouseLeave);
+    });
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  const handleMouseEnter = () => {
+    gsap.to(cursor.value, { scale: 1.4, border: '0.05em solid black', background: 'rgb(40,255,183)', duration: 0.2 });
+  };
+  const handleMouseLeave = () => {
+    gsap.to(cursor.value, { scale: 1, border: '1px solid transparent', background: 'rgb(103, 195, 253)', duration: 0.2 });
+  };
 });
 </script>
 

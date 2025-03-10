@@ -15,3 +15,17 @@
         width: 380px;
     }
 }
+
+@keyframes headline-circle-anim {
+ 0% {
+   scale: 1;
+ }
+    25%{
+        scale: 1.5;
+    }75%{
+        scale:1 ;
+    }
+    100% {
+        scale: 1.5;
+    }
+}
