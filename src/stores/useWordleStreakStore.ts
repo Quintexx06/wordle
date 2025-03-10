@@ -2,10 +2,18 @@ import { defineStore } from "pinia";
 
 export const useWordleStreakStore = defineStore("wordleStreak", {
   state: () => ({
-    streakData: JSON.parse(localStorage.getItem("wordleStreak") || "[]").map((data: string) => new Date(data)),
-    displayCalendar: true,
+    streakData: [] as Date[],
+    displayCalendar: false,
   }),
   actions: {
+    loadFromLocalStorage() {
+      if (typeof localStorage !== "undefined") {
+        const storedData = localStorage.getItem("wordleStreak");
+        this.streakData = storedData
+          ? JSON.parse(storedData).map((data: string) => new Date(data))
+          : [];
+      }
+    },
     updateStreak(date: Date) {
       this.streakData.push(new Date(date));
       this.saveToLocalStorage();

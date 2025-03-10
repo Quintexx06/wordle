@@ -13,9 +13,10 @@ import { DatePicker } from 'primevue'
 
 
     <Transition >
+
       <div class="streak-container" v-if="props.activeStreakCalendar">
+
         <DatePicker
-          v-if="date.length > 0"
           :modelValue="date"
           inline
           selectionMode="multiple"

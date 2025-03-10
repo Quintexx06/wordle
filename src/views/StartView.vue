@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import { gsap } from "gsap";
 import AdvertBlock from '@/components/AdvertBlock.vue'
 import StreakCalendar from '@/components/StreakCalendar.vue'
 import { useWordleStreakStore } from '@/stores/useWordleStreakStore.ts'
 
 const wordleStreakStore = useWordleStreakStore();
-const activeStreakCalendar = ref(wordleStreakStore.activateStreak);
 
 onMounted(() =>{
 
+  wordleStreakStore.loadFromLocalStorage();
 
   const text = document.querySelector(".animated-heading");
   if (text) {
