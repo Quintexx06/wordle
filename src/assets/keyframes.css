@@ -17,15 +17,15 @@
 }
 
 @keyframes headline-circle-anim {
- 0% {
-   scale: 1;
- }
-    25%{
+    0% {
         scale: 1.5;
+    }
+    25%{
+        scale: 1;
     }75%{
-        scale:1 ;
+        scale:1.5;
     }
     100% {
-        scale: 1.5;
+        scale: 1;
     }
 }

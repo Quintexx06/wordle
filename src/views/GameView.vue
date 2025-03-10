@@ -7,7 +7,7 @@ const colAmount = ref(5)
 const filledRow = ref(-1)
 const lettersArr = ref(Array.from({ length: colAmount.value }, () => Array(5).fill('')))
 const wordOfTheDay = ref('')
-const wonGameStatus = ref(0)
+const wonGameStatus = ref(2)
 const wordleStreakStore = useWordleStreakStore();
 
 const inputFieldsAnim = () => {
@@ -19,12 +19,15 @@ const inputFieldsAnim = () => {
       { y: 50, opacity: 0 },
       {
         y: 0,
+
         opacity: 1,
         duration: 0.8,
         ease: "power3.out",
         stagger: 0.05,
+
       }
     );
+
   }
 }
 
@@ -70,7 +73,7 @@ const circleAnims = () => {
   )
 }
 
-const showEndScreen = (wonGame: boolean) => {
+const showEndScreen = (wonGame: number) => {
   wonGameStatus.value = wonGame
 
   if(wonGame) {
@@ -151,7 +154,7 @@ const checkLettersInRow = (newlettersArr: string[][]) => {
 
   }
 
-  if (!incorrectWord.value) showEndScreen(true)
+  if (!incorrectWord.value) showEndScreen(1)
 }
 
 const getWordleWord = async () => {
@@ -173,7 +176,7 @@ onMounted(() => {
       setTimeout(() => {
         lettersArr.value[filledRow.value].forEach((_, index) => {
           const inputField = document.getElementById('input-' + filledRow.value + '-' + index)
-          if(inputField){
+          if(inputField) {
             inputField.disabled = true
           }
         })
@@ -195,7 +198,7 @@ onMounted(() => {
         ) {
           console.log(`Row ${rowIndex} is completely filled  and not empty!`)
           if (rowIndex == 4) {
-            showEndScreen(false)
+            showEndScreen(0)
           }
 
           filledRow.value = rowIndex
@@ -272,8 +275,8 @@ onMounted(() => {
       alt="Shape 2"
     />
   </main>
-  <div v-show="wonGameStatus" id="end-screen-backdrop" class="end-screen-backdrop"></div>
-  <div v-show="wonGameStatus" id="end-screen" class="end-screen">
+  <div v-show="wonGameStatus != 2" id="end-screen-backdrop" class="end-screen-backdrop"></div>
+  <div v-show="wonGameStatus != 2" id="end-screen" class="end-screen">
     <div class="circle-decor-wrapper">
       <div class="circle-decor" id="circle-decor"></div>
       <div class="circle-decor-2" id="circle-decor-2"></div>
@@ -363,19 +366,6 @@ onMounted(() => {
   width: 100vw;
 }
 
-.counter {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 10px 20px;
-  border-bottom-left-radius: 30px;
-  border-left: #46bae4 2px solid;
-  border-bottom: #46bae4 2px solid;
-
-  font-size: 30px;
-  font-weight: 500;
-  font-family: 'Raleway', sans-serif;
-}
 .col {
   display: flex;
   flex-direction: column;
@@ -384,7 +374,7 @@ onMounted(() => {
 
 /*noinspection ALL*/
 :deep(.input) {
-  opacity: 0;
+
   width: 55px;
   height: 60px;
   text-align: center;
@@ -399,28 +389,34 @@ onMounted(() => {
   transition: 0.2s ease;
 }
 
+
 /*noinspection ALL*/
 :deep(.input:focus) {
   border: 0.04em solid #5482ac;
   background: #ebf5ff;
+  opacity: 1;
+
 }
 
 /*noinspection ALL*/
 :deep(.input.correct) {
   border: 0.04em solid #2ad394;
   background: #c8f8e6;
+  opacity: 1;
 }
 
 /*noinspection ALL*/
 :deep(.input.incorrect) {
   border: 0.04em solid #ed4040;
   background: #f4cbcb;
+  opacity: 1;
 }
 
 /*noinspection ALL*/
 :deep(.input.misplaced) {
   border: 0.04em solid #eda840;
   background: #f4e2cb;
+  opacity: 1;
 }
 
 /*noinspection ALL*/
