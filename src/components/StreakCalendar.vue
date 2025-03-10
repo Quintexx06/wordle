@@ -1,12 +1,19 @@
 <script setup lang="ts">
 
 import { useWordleStreakStore } from '@/stores/useWordleStreakStore.ts'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const wordleStreakStore = useWordleStreakStore();
-const date = ref(wordleStreakStore.streakData);
+const date = ref();
 const props = defineProps(['activeStreakCalendar'])
 import { DatePicker } from 'primevue'
+
+onMounted( () => {
+  wordleStreakStore.loadFromLocalStorage();
+  date.value = wordleStreakStore.streakData;
+
+})
+
 </script>
 
 <template>

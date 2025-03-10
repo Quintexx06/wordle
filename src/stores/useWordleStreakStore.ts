@@ -7,12 +7,11 @@ export const useWordleStreakStore = defineStore("wordleStreak", {
   }),
   actions: {
     loadFromLocalStorage() {
-      if (typeof localStorage !== "undefined") {
-        const storedData = localStorage.getItem("wordleStreak");
-        this.streakData = storedData
-          ? JSON.parse(storedData).map((data: string) => new Date(data))
-          : [];
-      }
+      const storedData = localStorage.getItem("wordleStreak");
+      this.streakData = storedData
+        ? JSON.parse(storedData).map((data: string) => new Date(data))
+        : [];
+
     },
     updateStreak(date: Date) {
       this.streakData.push(new Date(date));

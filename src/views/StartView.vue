@@ -9,8 +9,6 @@ const wordleStreakStore = useWordleStreakStore();
 
 onMounted(() =>{
 
-  wordleStreakStore.loadFromLocalStorage();
-
   const text = document.querySelector(".animated-heading");
   if (text) {
     const letters = text.textContent?.trim().split("");
