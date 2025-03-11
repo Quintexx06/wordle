@@ -251,6 +251,7 @@ onMounted(() => {
             autocomplete="off"
             v-model="lettersArr[rowIndex][colIndex]"
             class="input"
+            :class="{'visible': lettersArr[rowIndex][colIndex] !== ''}"
             @input="handleInput(rowIndex, colIndex)"
             type="text"
           />
@@ -374,7 +375,7 @@ onMounted(() => {
 
 /*noinspection ALL*/
 :deep(.input) {
-
+  opacity: 0;
   width: 55px;
   height: 60px;
   text-align: center;
@@ -387,6 +388,10 @@ onMounted(() => {
   line-height: 0;
   background: #fafcff;
   transition: 0.2s ease;
+}
+
+:deep(.input.visible){
+  opacity: 1!important;
 }
 
 
