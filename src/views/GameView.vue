@@ -9,6 +9,7 @@ const lettersArr = ref(Array.from({ length: colAmount.value }, () => Array(5).fi
 const wordOfTheDay = ref('')
 const wonGameStatus = ref(2)
 const wordleStreakStore = useWordleStreakStore();
+const inputsVisible = ref(0);
 
 const inputFieldsAnim = () => {
   const inputs = document.querySelectorAll(".input");
@@ -85,11 +86,16 @@ const showEndScreen = (wonGame: number) => {
 }
 
 const handleInput = (rowIndex : number, colIndex : number) => {
+  if (!inputsVisible.value) {
+    inputsVisible.value = 1;
+  }
   const inputElement = ref(lettersArr.value[rowIndex][colIndex])
 
   if (inputElement.value.length > 1) {
     inputElement.value = inputElement.value.slice(0, 1)
   }
+
+
 
   inputElement.value = inputElement.value.toLocaleUpperCase()
   if (!lettersArr.value[rowIndex]) lettersArr.value[rowIndex] = []
@@ -97,7 +103,7 @@ const handleInput = (rowIndex : number, colIndex : number) => {
   lettersArr.value[rowIndex][colIndex] = inputElement.value.trim()
 
   //Switch to next Input after Input
-  if (rowIndex == 4 && colIndex == 4) return
+  if (rowIndex == 4 && colIndex == 4) return;
 
   for (let index = 0; index < lettersArr.value[filledRow.value + 1].length + 1; index++) {
     let currentRow = filledRow.value + 1
@@ -196,11 +202,9 @@ onMounted(() => {
           row.length === colAmount.value &&
           row.every((val) => val != '')
         ) {
-          console.log(`Row ${rowIndex} is completely filled  and not empty!`)
           if (rowIndex == 4) {
             showEndScreen(0)
           }
-
           filledRow.value = rowIndex
 
           setTimeout(() => {
@@ -235,6 +239,9 @@ onMounted(() => {
     lettersArr,
   }
 })
+
+
+
 </script>
 
 <template>
@@ -251,7 +258,7 @@ onMounted(() => {
             autocomplete="off"
             v-model="lettersArr[rowIndex][colIndex]"
             class="input"
-            :class="{'visible': lettersArr[rowIndex][colIndex] !== ''}"
+            :class="{'visible': inputsVisible}"
             @input="handleInput(rowIndex, colIndex)"
             type="text"
           />

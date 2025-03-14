@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { gsap } from "gsap";
-import { onMounted, ref, nextTick } from "vue";
+import { onMounted, ref } from "vue";
 
 const cursor = ref(null);
 
