@@ -60,7 +60,6 @@ const circleAnims = () => {
     customBackground2 = "linear-gradient(to right, rgb(216, 83, 83), rgb(218, 148, 127))";
   }
 
-
   gsap.fromTo(
     circleDecor1,
     { opacity: 0, x: 50, background: customBackground1  },
@@ -297,8 +296,8 @@ onMounted(() => {
     <h3 v-show="wonGameStatus">Congrats you won for today</h3>
 
     <div class="flex-row">
-      <router-link class="button" to="/">Back Home</router-link>
-      <router-link class="button"  @click="wordleStreakStore.activateStreak" to="/"> Your Streak</router-link>
+      <router-link class="button" draggable="false" to="/">Back Home</router-link>
+      <router-link class="button" draggable="false"  @click="wordleStreakStore.activateStreak" to="/"> Your Streak</router-link>
     </div>
   </div>
 </template>
@@ -307,6 +306,7 @@ onMounted(() => {
 
 .headline{
   position: relative;
+  user-select: none;
 
 }
 

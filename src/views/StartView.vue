@@ -86,15 +86,15 @@ onMounted(() =>{
   <main>
     <div class="container">
       <div class="col">
-        <h1 class="text-center animated-heading">
+        <h1 class="text-center animated-heading user-select-none">
           Wordle&nbsp;Application
         </h1>
-        <h2 class="text-center">Guess the Word of the Day!</h2>
+        <h2 class="text-center user-select-none">Guess the Word of the Day!</h2>
       </div>
     </div>
     <div class="row mt-12" >
-      <router-link to="play" class="button confetti-button">Start Playing</router-link>
-      <router-link @click="wordleStreakStore.toggleStreak" :class="{active: wordleStreakStore.displayCalendar}" to="#" class="button">Your Streak</router-link>
+      <router-link to="play" class="button confetti-button" draggable="false">Start Playing</router-link>
+      <router-link @click="wordleStreakStore.toggleStreak" draggable="false" :class="{active: wordleStreakStore.displayCalendar}" to="#" class="button">Your Streak</router-link>
     </div>
     <img src="../assets/startView/shape_1.svg" draggable="false" class="shape shape-1" alt="Shape 1">
     <img src="../assets/startView/shape_2.svg" draggable="false" class="shape shape-2" alt="Shape 2">
@@ -107,6 +107,9 @@ onMounted(() =>{
 
 <style scoped>
 
+  .user-select-none{
+    user-select: none;
+  }
 
   .row{
     display: flex;
