@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { gsap } from 'gsap'
 import { useWordleStreakStore } from '@/stores/useWordleStreakStore.ts'
 
@@ -84,22 +84,48 @@ const showEndScreen = (wonGame: number) => {
   circleAnims()
 }
 
-const handleInput = (rowIndex : number, colIndex : number) => {
-  if (!inputsVisible.value) {
-    inputsVisible.value = 1;
+const handleBackspace = (rowIndex : number, colIndex: number) => {
+  //Switch to last Input and delete Input
+  if (rowIndex == 0 && colIndex == 0) return;
+
+  if(colIndex == 0 ){
+    rowIndex--;
+    colIndex = 0;
   }
+  else{
+    colIndex--;
+  }
+
+  const input = lettersArr.value[rowIndex][colIndex]
+  if(input) {
+    nextTick(() => {
+      const lastFocusInput = document.getElementById(`input-${rowIndex}-${colIndex}`);
+      if (lastFocusInput) {
+        lastFocusInput.focus();
+      }
+    });
+  }
+
+
+
+  }
+
+const handleInput = ( rowIndex : number, colIndex : number) => {
+
+  inputsVisible.value ||= 1;
+
   const inputElement = ref(lettersArr.value[rowIndex][colIndex])
 
   if (inputElement.value.length > 1) {
     inputElement.value = inputElement.value.slice(0, 1)
   }
 
-
-
   inputElement.value = inputElement.value.toLocaleUpperCase()
   if (!lettersArr.value[rowIndex]) lettersArr.value[rowIndex] = []
 
   lettersArr.value[rowIndex][colIndex] = inputElement.value.trim()
+
+
 
   //Switch to next Input after Input
   if (rowIndex == 4 && colIndex == 4) return;
@@ -135,7 +161,6 @@ const checkLettersInRow = (newlettersArr: string[][]) => {
       inputStatus.value = 'incorrect'
       incorrectWord.value = true
     } else if (wordOfTheDay.value[i] !== inputLetter) {
-      //Misplaced Logic
 
       const indexOfMisplacedElement = wordOfTheDay.value.indexOf(inputLetter)
       const checkMissplacedinputElement = document.getElementById(
@@ -258,7 +283,9 @@ onMounted(() => {
             v-model="lettersArr[rowIndex][colIndex]"
             class="input"
             :class="{'visible': inputsVisible}"
-            @input="handleInput(rowIndex, colIndex)"
+            @input="handleInput( rowIndex, colIndex)"
+            @keydown.backspace="handleBackspace(rowIndex, colIndex)"
+
             type="text"
           />
         </div>
