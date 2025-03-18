@@ -39,7 +39,7 @@ export const useWordleStreakStore = defineStore("wordleStreak", {
     toggleStreak() {
       this.displayCalendar = !this.displayCalendar;
     },
-    setFirstGameTodayTrue(){
+    handleFirstGameOfTheDay(playedJustNow: boolean = false) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -50,8 +50,12 @@ export const useWordleStreakStore = defineStore("wordleStreak", {
         this.playedFirstGameToday = [today, false];
       }
 
-      this.playedFirstGameToday[1] = true;
+      if(playedJustNow) {
+        this.playedFirstGameToday[1] = true;
+      }
+
       this.saveToLocalStorage();
     }
+
   },
 });

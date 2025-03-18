@@ -79,7 +79,7 @@ const showEndScreen = (wonGame: number) => {
     wordleStreakStore.updateStreak(new Date());
   }
 
-  wordleStreakStore.setFirstGameTodayTrue();
+  wordleStreakStore.handleFirstGameOfTheDay(true);
 
   endScreenAnims()
   circleAnims()

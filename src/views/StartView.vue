@@ -13,8 +13,7 @@ const playedFirstGameToday = () => {
 
 }
 
-onMounted(() =>{
-  playedFirstGameToday();
+const headingBounceAnimation = () => {
   const text = document.querySelector(".animated-heading");
   if (text) {
     const letters = text.textContent?.trim().split("");
@@ -38,8 +37,9 @@ onMounted(() =>{
       }
     );
   }
+}
 
-
+const confettiBtnAnimation = () => {
   const button = document.querySelector(".confetti-button");
   let cooldown = false;
 
@@ -84,6 +84,14 @@ onMounted(() =>{
       );
     }
   });
+}
+
+onMounted(() =>{
+  wordleStreakStore.handleFirstGameOfTheDay();
+  playedFirstGameToday();
+
+  headingBounceAnimation();
+  confettiBtnAnimation();
 
 });
 </script>
