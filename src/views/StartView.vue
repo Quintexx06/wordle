@@ -7,8 +7,14 @@ import { useWordleStreakStore } from '@/stores/useWordleStreakStore.ts'
 
 const wordleStreakStore = useWordleStreakStore();
 
-onMounted(() =>{
 
+const playedFirstGameToday = () => {
+  console.log(wordleStreakStore.playedFirstGameToday);
+
+}
+
+onMounted(() =>{
+  playedFirstGameToday();
   const text = document.querySelector(".animated-heading");
   if (text) {
     const letters = text.textContent?.trim().split("");
@@ -92,10 +98,16 @@ onMounted(() =>{
         <h2 class="text-center user-select-none">Guess the Word of the Day!</h2>
       </div>
     </div>
+
     <div class="row mt-12" >
-      <router-link to="play" class="button confetti-button" draggable="false">Start Playing</router-link>
+      <router-link to="/play" class="button confetti-button" draggable="false">Start Playing</router-link>
       <router-link @click="wordleStreakStore.toggleStreak" draggable="false" :class="{active: wordleStreakStore.displayCalendar}" to="#" class="button">Your Streak</router-link>
     </div>
+
+    <div class="text-center font-bold mt-12" v-show="wordleStreakStore.playedFirstGameToday[1]">
+      Played today already
+    </div>
+
     <img src="../assets/startView/shape_1.svg" draggable="false" class="shape shape-1" alt="Shape 1">
     <img src="../assets/startView/shape_2.svg" draggable="false" class="shape shape-2" alt="Shape 2">
     <AdvertBlock />
@@ -144,6 +156,11 @@ onMounted(() =>{
     width: 450px;
     top: 0;
     left: 0;
+  }
+
+  .font-bold{
+    font-weight: bold;
+    color: #d56f7a;
   }
 
 </style>

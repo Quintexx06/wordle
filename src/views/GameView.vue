@@ -75,10 +75,11 @@ const circleAnims = () => {
 
 const showEndScreen = (wonGame: number) => {
   wonGameStatus.value = wonGame
-
-  if(wonGame) {
+  if(wonGame && !wordleStreakStore.playedFirstGameToday[1]) {
     wordleStreakStore.updateStreak(new Date());
   }
+
+  wordleStreakStore.setFirstGameTodayTrue();
 
   endScreenAnims()
   circleAnims()
