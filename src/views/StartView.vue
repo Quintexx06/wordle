@@ -12,6 +12,7 @@ let inProgressFirstGameAnimation = false;
 
 const playedFirstGameTodayBtnAnimation = () => {
   const playBtn = document.querySelector(".play-button");
+  const textPlayedText = document.querySelector(".text-played-desc");
 
   playBtn.addEventListener("mouseenter", () => {
     if(inProgressFirstGameAnimation) return;
@@ -20,7 +21,6 @@ const playedFirstGameTodayBtnAnimation = () => {
       playBtn,
       {
         background: 'rgb(245, 255, 247)',
-
       },
       {
         rotation: '360deg',
@@ -35,6 +35,17 @@ const playedFirstGameTodayBtnAnimation = () => {
         }
       }
     );
+    gsap.fromTo(textPlayedText, {
+      opacity: 0,
+      x: -15,
+      y: 20,
+    }, {
+      x: 0,
+      y: 0,
+      opacity: 1,
+      duration: 0.7,
+      delay: 0.7,
+    })
   })
 }
 
@@ -139,18 +150,21 @@ onMounted(() =>{
     <div class="row mt-12" >
       <div class="btn-container">
         <router-link to="/play" class="button play-button confetti-button" draggable="false">Start Playing</router-link>
-        <div class=" text-played-desc mt-12" v-show="wordleStreakStore.playedFirstGameToday[1]">
+        <div id="text-played-desc" class=" text-played-desc mt-12" v-show="wordleStreakStore.playedFirstGameToday[1]">
           <Info
+            color="#329972"
             :size="22"
           />
          <span>
             Streakgame<br />
-          already lost
+          already played
          </span>
         </div>
       </div>
       <router-link @click="wordleStreakStore.toggleStreak" draggable="false" :class="{active: wordleStreakStore.displayCalendar}" to="#" class="button">Your Streak</router-link>
     </div>
+
+
 
 
 
@@ -216,11 +230,11 @@ onMounted(() =>{
   }
 
   .text-played-desc{
-
+    margin-left: 18px;
     display: flex;
     align-items: center;
     gap: 10px;
-
+    opacity: 0;
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
