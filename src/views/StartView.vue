@@ -4,13 +4,38 @@ import { gsap } from "gsap";
 import AdvertBlock from '@/components/AdvertBlock.vue'
 import StreakCalendar from '@/components/StreakCalendar.vue'
 import { useWordleStreakStore } from '@/stores/useWordleStreakStore.ts'
+import { Info } from 'lucide-vue-next';
+
 
 const wordleStreakStore = useWordleStreakStore();
+let inProgressFirstGameAnimation = false;
 
+const playedFirstGameTodayBtnAnimation = () => {
+  const playBtn = document.querySelector(".play-button");
 
-const playedFirstGameToday = () => {
-  console.log(wordleStreakStore.playedFirstGameToday);
+  playBtn.addEventListener("mouseenter", () => {
+    if(inProgressFirstGameAnimation) return;
+    inProgressFirstGameAnimation = true;
+    gsap.fromTo(
+      playBtn,
+      {
+        background: 'rgb(245, 255, 247)',
 
+      },
+      {
+        rotation: '360deg',
+        ease: "elastic.out(1, 0.3)",
+        background: 'rgb(103, 253, 196)',
+        duration: 3.2,
+        onUpdate: function() {
+          const progress = this.progress();
+          if (progress > 0.1) {
+            playBtn.textContent = "Play for Fun!";
+          }
+        }
+      }
+    );
+  })
 }
 
 const headingBounceAnimation = () => {
@@ -88,10 +113,14 @@ const confettiBtnAnimation = () => {
 
 onMounted(() =>{
   wordleStreakStore.handleFirstGameOfTheDay();
-  playedFirstGameToday();
-
   headingBounceAnimation();
-  confettiBtnAnimation();
+
+  if(wordleStreakStore.playedFirstGameToday[1]){
+    playedFirstGameTodayBtnAnimation();
+  } else{
+    confettiBtnAnimation();
+  }
+
 
 });
 </script>
@@ -100,7 +129,7 @@ onMounted(() =>{
   <main>
     <div class="container">
       <div class="col">
-        <h1 class="text-center animated-heading user-select-none">
+        <h1 id="heading-title" class="text-center animated-heading user-select-none">
           Wordle&nbsp;Application
         </h1>
         <h2 class="text-center user-select-none">Guess the Word of the Day!</h2>
@@ -108,13 +137,22 @@ onMounted(() =>{
     </div>
 
     <div class="row mt-12" >
-      <router-link to="/play" class="button confetti-button" draggable="false">Start Playing</router-link>
+      <div class="btn-container">
+        <router-link to="/play" class="button play-button confetti-button" draggable="false">Start Playing</router-link>
+        <div class=" text-played-desc mt-12" v-show="wordleStreakStore.playedFirstGameToday[1]">
+          <Info
+            :size="22"
+          />
+         <span>
+            Streakgame<br />
+          already lost
+         </span>
+        </div>
+      </div>
       <router-link @click="wordleStreakStore.toggleStreak" draggable="false" :class="{active: wordleStreakStore.displayCalendar}" to="#" class="button">Your Streak</router-link>
     </div>
 
-    <div class="text-center font-bold mt-12" v-show="wordleStreakStore.playedFirstGameToday[1]">
-      Played today already
-    </div>
+
 
     <img src="../assets/startView/shape_1.svg" draggable="false" class="shape shape-1" alt="Shape 1">
     <img src="../assets/startView/shape_2.svg" draggable="false" class="shape shape-2" alt="Shape 2">
@@ -131,10 +169,21 @@ onMounted(() =>{
     user-select: none;
   }
 
+  .play-button{
+    min-width: 145px;
+    text-align: center;
+  }
+
   .row{
     display: flex;
     justify-content: center;
     gap: 15px;
+    position: relative;
+  }
+
+  .btn-container{
+    display: flex;
+    flex-direction: column;
     position: relative;
   }
 
@@ -166,9 +215,15 @@ onMounted(() =>{
     left: 0;
   }
 
-  .font-bold{
-    font-weight: bold;
-    color: #d56f7a;
+  .text-played-desc{
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
   }
 
 </style>
