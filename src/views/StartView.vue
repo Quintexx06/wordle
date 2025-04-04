@@ -6,7 +6,6 @@ import StreakCalendar from '@/components/StreakCalendar.vue'
 import { useWordleStreakStore } from '@/stores/useWordleStreakStore.ts'
 import { Info } from 'lucide-vue-next';
 
-
 const wordleStreakStore = useWordleStreakStore();
 let inProgressFirstGameAnimation = false;
 

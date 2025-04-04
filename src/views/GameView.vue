@@ -2,6 +2,7 @@
 import { nextTick, onMounted, ref, watch } from 'vue'
 import { gsap } from 'gsap'
 import { useWordleStreakStore } from '@/stores/useWordleStreakStore.ts'
+import KeyboardVisualizer from '@/components/KeyboardVisualizer.vue'
 
 const colAmount = ref(5)
 const filledRow = ref(-1)
@@ -328,6 +329,7 @@ onMounted(() => {
       <router-link class="button" draggable="false"  @click="wordleStreakStore.activateStreak" to="/"> Your Streak</router-link>
     </div>
   </div>
+  <KeyboardVisualizer />
 </template>
 
 <style scoped>
